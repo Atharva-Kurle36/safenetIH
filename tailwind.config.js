@@ -7,14 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        dark: "#0a0c10",
-        panel: "#161b22",
-        primary: "#00f0ff",
-        secondary: "#0ff0bc",
-        danger: "#ff3366"
+        dark: "#000000",
+        panel: "#080c1a",
+        primary: "#1d4ed8",
+        secondary: "#3b82f6",
+        danger: "#ef4444"
       },
       backgroundImage: {
-        'cyber-grid': "linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px)"
+        'cyber-grid': "linear-gradient(rgba(29, 78, 216, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(29, 78, 216, 0.12) 1px, transparent 1px)"
       }
     },
   },
