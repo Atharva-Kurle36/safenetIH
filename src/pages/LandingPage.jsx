@@ -42,7 +42,7 @@ export default function LandingPage() {
               Analyze Email
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/simulator" className="w-full sm:w-auto px-8 py-3 rounded text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300">
+            <Link to="/simulator" className="w-full sm:w-auto px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300">
               Start Training
             </Link>
           </div>

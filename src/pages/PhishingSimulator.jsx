@@ -58,13 +58,13 @@ export default function PhishingSimulator() {
             <div className="flex justify-center gap-6 mt-6">
               <button 
                 onClick={() => { setHasClicked(true); setActiveTab('feedback'); }}
-                className="bg-danger/10 text-danger border border-danger/30 hover:bg-danger/20 px-8 py-3 rounded-lg font-bold transition-all"
+                className="bg-danger/10 text-danger border border-danger/30 hover:bg-danger/20 px-8 py-3 rounded-full font-bold transition-all"
               >
                 It's a Phishing Attempt
               </button>
               <button 
                 onClick={() => { setHasClicked(true); setActiveTab('feedback'); }}
-                className="bg-secondary/10 text-secondary border border-secondary/30 hover:bg-secondary/20 px-8 py-3 rounded-lg font-bold transition-all"
+                className="bg-secondary/10 text-secondary border border-secondary/30 hover:bg-secondary/20 px-8 py-3 rounded-full font-bold transition-all"
               >
                 It Looks Safe to Click
               </button>
@@ -167,7 +167,7 @@ export default function PhishingSimulator() {
                         <div className="flex justify-between items-center mb-2">
                           <h4 className="font-bold text-white">{indicator.title}</h4>
                           <span className={cn(
-                            "text-xs px-2 py-1 rounded font-bold uppercase",
+                            "text-xs px-3 py-1 rounded-full font-bold uppercase",
                             indicator.severity === 'Critical' ? "bg-danger text-white" :
                             indicator.severity === 'High' ? "bg-orange-500 text-white" : "bg-yellow-500 text-white"
                           )}>

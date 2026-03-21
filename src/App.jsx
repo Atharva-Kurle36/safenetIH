@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage';
 import PhishingDetector from './pages/PhishingDetector';
 import PhishingSimulator from './pages/PhishingSimulator';
 import Dashboard from './pages/Dashboard';
+import AboutPage from './pages/AboutPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/detector" element={<PhishingDetector />} />
             <Route path="/simulator" element={<PhishingSimulator />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/about" element={<AboutPage />} />
           </Routes>
         </main>
       </div>

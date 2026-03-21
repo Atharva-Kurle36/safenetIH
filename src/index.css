@@ -10,7 +10,7 @@
 
 @layer components {
   .cyber-button {
-    @apply relative overflow-hidden bg-primary/10 text-primary border border-primary/50 px-6 py-3 rounded uppercase font-bold tracking-wider hover:bg-primary/20 hover:shadow-[0_0_15px_rgba(0,240,255,0.5)] transition-all duration-300;
+    @apply relative overflow-hidden bg-primary/10 text-primary border border-primary/50 px-8 py-3 rounded-full uppercase font-bold tracking-wider hover:bg-primary/20 hover:shadow-[0_0_15px_rgba(0,240,255,0.5)] transition-all duration-300;
   }
   
   .cyber-card {

@@ -1,67 +1,34 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Shield, Activity, Target, LayoutDashboard } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { cn } from '../lib/utils';
+import { Link } from 'react-router-dom';
+import { Shield, Home, Activity, Target, LayoutDashboard, Info } from 'lucide-react';
+import { NavBar } from './ui/tubelight-navbar';
 
 const navItems = [
-  { name: 'Detector', path: '/detector', icon: Activity },
-  { name: 'Simulator', path: '/simulator', icon: Target },
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Home', url: '/', icon: Home },
+  { name: 'Detector', url: '/detector', icon: Activity },
+  { name: 'Simulator', url: '/simulator', icon: Target },
+  { name: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
+  { name: 'About', url: '/about', icon: Info },
 ];
 
 export default function Navbar() {
-  const location = useLocation();
-
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-md border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative flex items-center justify-center p-2 rounded-lg bg-primary/10 border border-primary/20 group-hover:border-primary/50 transition-colors">
-              <Shield className="w-6 h-6 text-primary" />
-              <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <span className="text-xl font-bold tracking-wider text-white">
-              SAFE<span className="text-primary">NET</span>
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              const Icon = item.icon;
-              
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "relative flex items-center gap-2 text-sm font-medium transition-colors hover:text-white py-2",
-                    isActive ? "text-white" : "text-slate-400"
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="navbar-indicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full shadow-[0_0_10px_rgba(0,240,255,0.8)]"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
+    <>
+      {/* SafeNet brand mark — top-left, always visible */}
+      <div className="fixed top-5 left-6 z-[60]">
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="relative flex items-center justify-center p-2 rounded-lg bg-primary/10 border border-primary/20 group-hover:border-primary/50 transition-colors">
+            <Shield className="w-5 h-5 text-primary" />
+            <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-
-          <div className="hidden md:block">
-            <Link to="/simulator" className="cyber-button text-sm px-5 py-2">
-              Start Training
-            </Link>
-          </div>
-        </div>
+          <span className="text-lg font-bold tracking-wider text-white hidden sm:inline">
+            SAFE<span className="text-primary">NET</span>
+          </span>
+        </Link>
       </div>
-    </nav>
+
+      {/* Tubelight Navbar — centered */}
+      <NavBar items={navItems} />
+    </>
   );
 }
