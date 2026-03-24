@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.analyze import router as analyze_router
+from app.routes.dashboard import router as dashboard_router
 from app.routes.simulate import router as simulate_router
+from app.services.mongo_client import mongo_connection
 
 
 app = FastAPI(
@@ -30,6 +32,7 @@ app.add_middleware(
 
 app.include_router(analyze_router)
 app.include_router(simulate_router)
+app.include_router(dashboard_router)
 
 
 @app.get("/")
@@ -40,3 +43,8 @@ def root() -> dict[str, str]:
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/health/db")
+def health_db() -> dict[str, object]:
+    return mongo_connection.status()

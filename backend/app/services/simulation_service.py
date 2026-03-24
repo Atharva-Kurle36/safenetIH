@@ -1,5 +1,7 @@
 import random
 
+from app.services.dashboard_service import dashboard_telemetry
+
 
 SIMULATION_SAMPLES = [
     {
@@ -51,4 +53,6 @@ SIMULATION_SAMPLES = [
 
 
 def generate_simulated_email() -> dict[str, object]:
-    return random.choice(SIMULATION_SAMPLES)
+    sample = random.choice(SIMULATION_SAMPLES)
+    dashboard_telemetry.record_simulation_generated()
+    return sample

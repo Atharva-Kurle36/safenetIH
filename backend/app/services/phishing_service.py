@@ -1,3 +1,4 @@
+from app.services.dashboard_service import dashboard_telemetry
 from app.services.ml_service import phishing_model
 from app.utils.text_utils import analyze_email_text
 from app.utils.url_utils import analyze_url
@@ -18,11 +19,10 @@ def analyze_payload(email_text: str, url: str) -> dict[str, object]:
     url_score, url_reasons = analyze_url(url)
 
     base_score = min(100, text_score + url_score)
-
-    ml_probability = phishing_model.predict_probability(email_text)
     combined_score = base_score
     reasons = text_reasons + url_reasons
 
+    ml_probability = phishing_model.predict_probability(email_text)
     if ml_probability is not None:
         ml_score = int(round(ml_probability * 100))
         combined_score = int(round((0.65 * base_score) + (0.35 * ml_score)))
@@ -36,6 +36,13 @@ def analyze_payload(email_text: str, url: str) -> dict[str, object]:
 
     combined_score = max(0, min(100, combined_score))
     result = "Phishing" if combined_score >= 50 else "Safe"
+
+    dashboard_telemetry.record_analysis(
+        email_text=email_text,
+        url=url,
+        result=result,
+        risk_score=combined_score,
+    )
 
     return {
         "result": result,
