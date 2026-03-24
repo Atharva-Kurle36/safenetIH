@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Shield, Users, Cpu, Globe, Github, Linkedin, Mail, ArrowRight, Sparkles, Lock, Eye } from 'lucide-react';

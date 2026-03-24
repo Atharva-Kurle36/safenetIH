@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Home, Activity, Target, LayoutDashboard, Info } from 'lucide-react';
 import { NavBar } from './ui/tubelight-navbar';

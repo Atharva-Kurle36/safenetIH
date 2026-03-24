@@ -1,50 +1,77 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, ShieldAlert, Loader2, AlertTriangle, Link as LinkIcon, Mail } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Loader2, AlertTriangle, Link as LinkIcon, Mail, BarChart3 } from 'lucide-react';
 import { cn } from '../lib/utils';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+
+const escapeHtml = (value) => value
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export default function PhishingDetector() {
   const [emailText, setEmailText] = useState('');
   const [urlInput, setUrlInput] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!emailText.trim() && !urlInput.trim()) return;
     
     setIsAnalyzing(true);
     setResult(null);
+    setError('');
 
-    // Simulate API call
-    setTimeout(() => {
-      const isUrgent = emailText.toLowerCase().includes('urgent') || emailText.toLowerCase().includes('immediate');
-      const hasSuspiciousLink = urlInput.includes('bit.ly') || urlInput.includes('login') || urlInput.includes('update');
-      const isPhishing = isUrgent || hasSuspiciousLink || emailText.length > 50;
-
-      setResult({
-        status: isPhishing ? 'Phishing' : 'Safe',
-        riskScore: isPhishing ? Math.floor(Math.random() * 20) + 75 : Math.floor(Math.random() * 15) + 5,
-        reasons: isPhishing ? [
-          "Urgent or threatening language detected.",
-          "Suspicious URL structure redirects to an unknown domain.",
-          "Sender domain does not match official records."
-        ] : [
-          "No known malicious signatures found.",
-          "Sender domain authenticated via SPF/DKIM.",
-          "URL matches trusted domain database."
-        ],
-        highlightedWords: ['urgent', 'immediate', 'password', 'login', 'account', 'verify', 'suspend']
+    try {
+      const response = await fetch(`${API_BASE_URL}/analyze`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email_text: emailText,
+          url: urlInput
+        })
       });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      setResult({
+        status: data.result,
+        riskScore: data.risk_score,
+        reasons: data.reasons,
+        highlightedWords: data.highlight_words
+      });
+    } catch (requestError) {
+      setError('Unable to reach analysis API. Ensure backend is running on port 8000.');
+      setResult({
+        status: 'Safe',
+        riskScore: 0,
+        reasons: ['Analysis unavailable: backend connection error.'],
+        highlightedWords: []
+      });
+      console.error(requestError);
+    } finally {
       setIsAnalyzing(false);
-    }, 2000);
+    }
   };
 
   const renderHighlightedText = (text) => {
     if (!result) return text;
     
-    let highlightedText = text;
+    let highlightedText = escapeHtml(text);
     result.highlightedWords.forEach(word => {
-      const regex = new RegExp(`(${word})`, 'gi');
+      const escapedWord = escapeRegex(word);
+      const regex = new RegExp(`(${escapedWord})`, 'gi');
       highlightedText = highlightedText.replace(regex, '<span class="text-danger font-bold bg-danger/10 px-1 rounded">$1</span>');
     });
 
@@ -101,6 +128,10 @@ export default function PhishingDetector() {
               'Run Threat Analysis'
             )}
           </button>
+
+          {error && (
+            <p className="text-sm text-danger text-center">{error}</p>
+          )}
         </div>
 
         <div className="h-full">

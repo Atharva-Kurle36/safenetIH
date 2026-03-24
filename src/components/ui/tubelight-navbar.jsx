@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Link, useLocation } from "react-router-dom"
 import { cn } from "../../lib/utils"
@@ -19,22 +19,11 @@ export function NavBar({ items, className }) {
     items.find((item) => location.pathname === item.url)?.name || items[0].name
 
   const [activeTab, setActiveTab] = useState(currentTab)
-  const [isMobile, setIsMobile] = useState(false)
 
   // Keep activeTab in sync when the URL changes (e.g. browser back/forward)
   useEffect(() => {
     setActiveTab(currentTab)
   }, [currentTab])
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
 
   return (
     <div
