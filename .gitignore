@@ -1,3 +1,22 @@
+# Python venv
+backend/.venv/
+
+# Node modules
+node_modules/
+
+# Build / cache
+dist/
+/.vite
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
 node_modules
 dist
 .env
