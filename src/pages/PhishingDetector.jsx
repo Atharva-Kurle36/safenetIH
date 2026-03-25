@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, ShieldAlert, Loader2, AlertTriangle, Link as LinkIcon, Mail, BarChart3 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://safenetbacknd.vercel.app';
 
 const escapeHtml = (value) => value
   .replaceAll('&', '&amp;')
@@ -52,7 +52,7 @@ export default function PhishingDetector() {
         highlightedWords: data.highlight_words
       });
     } catch (requestError) {
-      setError('Unable to reach analysis API. Ensure backend is running on port 8000.');
+      setError('Unable to reach analysis API. Check backend URL and network connectivity.');
       setResult({
         status: 'Safe',
         riskScore: 0,

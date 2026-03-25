@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Search, XCircle, ArrowRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://safenetbacknd.vercel.app';
 
 const severityByExplanation = (text) => {
   if (text.toLowerCase().includes('sensitive')) return 'Critical';
@@ -47,7 +47,7 @@ export default function PhishingSimulator() {
       setVerdictMessage('');
       setActiveTab('email');
     } catch (requestError) {
-      setError('Unable to fetch simulation data. Ensure backend is running on port 8000.');
+      setError('Unable to fetch simulation data. Check backend URL and network connectivity.');
       console.error(requestError);
     } finally {
       setLoading(false);
