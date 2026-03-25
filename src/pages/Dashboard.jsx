@@ -47,7 +47,12 @@ export default function Dashboard() {
       setError('');
 
       try {
-        const response = await fetch(`${API_BASE_URL}/dashboard/metrics`);
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${API_BASE_URL}/dashboard/metrics`, {
+          headers: {
+            ...(token && { 'Authorization': `Bearer ${token}` })
+          }
+        });
         if (!response.ok) {
           throw new Error(`Dashboard metrics failed with status ${response.status}`);
         }

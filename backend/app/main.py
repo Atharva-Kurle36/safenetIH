@@ -16,6 +16,7 @@ else:
 from app.routes.analyze import router as analyze_router
 from app.routes.dashboard import router as dashboard_router
 from app.routes.simulate import router as simulate_router
+from app.routes.auth import router as auth_router
 from app.services.mongo_client import mongo_connection
 
 
@@ -47,6 +48,21 @@ app.add_middleware(
 app.include_router(analyze_router)
 app.include_router(simulate_router)
 app.include_router(dashboard_router)
+app.include_router(auth_router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize MongoDB connection on app startup"""
+    await mongo_connection.connect()
+    print("MongoDB connection established", file=sys.stderr)
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Close MongoDB connection on app shutdown"""
+    await mongo_connection.close()
+    print("MongoDB connection closed", file=sys.stderr)
 
 
 @app.get("/")
@@ -60,5 +76,5 @@ def health() -> dict[str, str]:
 
 
 @app.get("/health/db")
-def health_db() -> dict[str, object]:
-    return mongo_connection.status()
+async def health_db() -> dict[str, object]:
+    return await mongo_connection.status()
