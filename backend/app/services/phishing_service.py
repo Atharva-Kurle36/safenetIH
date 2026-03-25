@@ -1,5 +1,6 @@
 from app.services.dashboard_service import dashboard_telemetry
 from app.services.ml_service import phishing_model
+from app.services.ai_service import analyze_email_with_ai
 from app.utils.text_utils import analyze_email_text
 from app.utils.url_utils import analyze_url
 
@@ -30,6 +31,14 @@ def analyze_payload(email_text: str, url: str) -> dict[str, object]:
             reasons.append("ML model detected phishing-like language patterns.")
         elif ml_probability <= 0.3:
             reasons.append("ML model observed mostly benign language patterns.")
+
+    # Add AI-powered analysis for enhanced detection
+    ai_reasons = analyze_email_with_ai(email_text, url)
+    if ai_reasons:
+        reasons.extend(ai_reasons)
+        # Slightly boost score if AI confirms phishing indicators
+        if any(indicator.lower() in str(ai_reasons).lower() for indicator in ["urgent", "verify", "confirm", "click", "suspicious"]):
+            combined_score = min(100, combined_score + 5)
 
     if not email_text.strip() and not url.strip():
         reasons.append("No email text or URL was provided for analysis.")

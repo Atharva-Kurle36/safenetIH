@@ -1,6 +1,7 @@
 import random
 
 from app.services.dashboard_service import dashboard_telemetry
+from app.services.ai_service import generate_simulation_with_ai
 
 
 SIMULATION_SAMPLES = [
@@ -53,6 +54,16 @@ SIMULATION_SAMPLES = [
 
 
 def generate_simulated_email() -> dict[str, object]:
+    phishing_types = ["bank", "job", "security"]
+    selected_type = random.choice(phishing_types)
+    
+    # Try AI-generated simulation first
+    ai_simulation = generate_simulation_with_ai(selected_type)
+    if ai_simulation:
+        dashboard_telemetry.record_simulation_generated()
+        return ai_simulation
+    
+    # Fall back to hardcoded samples if AI is unavailable
     sample = random.choice(SIMULATION_SAMPLES)
     dashboard_telemetry.record_simulation_generated()
     return sample
