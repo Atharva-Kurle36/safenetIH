@@ -23,3 +23,6 @@ dist
 .env.local
 coverage
 .eslintcache
+backend/.venv/
+**/__pycache__/
+*.py[cod]
