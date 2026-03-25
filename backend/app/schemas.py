@@ -19,6 +19,16 @@ class SimulationResponse(BaseModel):
     explanation: list[str]
 
 
+class SimulationAssistantRequest(BaseModel):
+    question: str = Field(min_length=2, max_length=500)
+    email_text: str = Field(default="")
+    indicators: list[str] = Field(default_factory=list)
+
+
+class SimulationAssistantResponse(BaseModel):
+    answer: str
+
+
 class DashboardKPI(BaseModel):
     title: str
     value: str

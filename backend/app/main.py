@@ -1,5 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+import os
+import sys
+
+# Load environment variables from .env file - from backend directory
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+if os.path.exists(env_path):
+    load_dotenv(env_path)
+    print(f"Loaded .env from {env_path}", file=sys.stderr)
+else:
+    print(f".env not found at {env_path}, using defaults", file=sys.stderr)
+    load_dotenv()
 
 from app.routes.analyze import router as analyze_router
 from app.routes.dashboard import router as dashboard_router

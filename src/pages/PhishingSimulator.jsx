@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Search, XCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Search, XCircle, ArrowRight, Bot, Info, Send, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://safenetbacknd.vercel.app';
@@ -20,6 +20,15 @@ export default function PhishingSimulator() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [verdictMessage, setVerdictMessage] = useState('');
+  const [assistantInput, setAssistantInput] = useState('');
+  const [assistantLoading, setAssistantLoading] = useState(false);
+  const [assistantMessages, setAssistantMessages] = useState([
+    {
+      role: 'assistant',
+      content:
+        'I am your phishing coach. Ask me how to spot scams, verify senders, and respond safely to suspicious messages.',
+    },
+  ]);
 
   const getExpectedVerdict = (sample) => {
     if (!sample) return 'phishing';
@@ -91,10 +100,71 @@ export default function PhishingSimulator() {
     handleVerdict('safe');
   };
 
+  const askAssistant = async (question) => {
+    const trimmedQuestion = question.trim();
+    if (!trimmedQuestion || assistantLoading) return;
+
+    setAssistantMessages((prev) => [...prev, { role: 'user', content: trimmedQuestion }]);
+    setAssistantInput('');
+    setAssistantLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/simulate/assistant`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: trimmedQuestion,
+          email_text: simulation?.email_text || '',
+          indicators: simulation?.explanation || [],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Assistant API failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.answer || !data.answer.trim()) {
+        throw new Error('Assistant API returned an empty answer.');
+      }
+      setAssistantMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: data.answer,
+        },
+      ]);
+    } catch (assistantError) {
+      setAssistantMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: 'Assistant API is unavailable right now. Please try again in a moment.',
+        },
+      ]);
+      console.error(assistantError);
+    } finally {
+      setAssistantLoading(false);
+    }
+  };
+
+  const handleAssistantSubmit = (event) => {
+    event.preventDefault();
+    void askAssistant(assistantInput);
+  };
+
+  const quickQuestions = [
+    'What are the top red flags in this email?',
+    'How should I verify this request safely?',
+    'What steps reduce phishing risk at work?',
+  ];
+
   const emailBlocks = simulation?.email_text ? simulation.email_text.split('\n\n') : [];
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-6 max-w-6xl mx-auto">
+    <div className="min-h-screen pt-28 pb-20 px-6 max-w-5xl mx-auto">
       <div className="mb-12 text-center">
         <h1 className="text-3xl font-bold text-white mb-4 tracking-wide">Interactive Threat Simulator</h1>
         <p className="text-slate-400 max-w-2xl mx-auto">
@@ -102,7 +172,8 @@ export default function PhishingSimulator() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      {/* Simulation Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12">
         <div className="lg:col-span-8 flex flex-col items-stretch space-y-6">
           <div className="cyber-card flex-1 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
             <div className="flex border-b border-slate-700 pb-4 mb-4 items-center justify-between">
@@ -168,7 +239,7 @@ export default function PhishingSimulator() {
           )}
         </div>
 
-        <div className="lg:col-span-4 h-full">
+        <div className="lg:col-span-4">
           <AnimatePresence mode="wait">
             {!hasClicked ? (
               <motion.div
@@ -280,6 +351,130 @@ export default function PhishingSimulator() {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Full-Width AI Coach Section */}
+      <div className="w-full">
+        <div className="cyber-card shadow-[0_0_40px_rgba(0,0,0,0.6)]">
+          {/* Header */}
+          <div className="mb-4 pb-4 border-b border-slate-700/50">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-white">AI Phishing Coach</h2>
+                <p className="text-xs text-slate-400">Prevention-focused guidance & security tips</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Info Banner */}
+          <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs text-slate-300 flex items-start gap-2">
+            <Info className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+            <p>
+              Ask questions about phishing detection, sender verification, or cyber safety best practices. The coach provides defensive guidance using the current simulation context.
+            </p>
+          </div>
+
+          {/* Main Chat Container - 650px height */}
+          <div className="h-[650px] flex flex-col rounded-lg border border-slate-700/50 bg-slate-900/50">
+            {/* Messages Area - scrollable */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-4 space-y-4">
+              {assistantMessages.length === 0 ? (
+                <div className="flex items-center justify-center h-full text-center">
+                  <div>
+                    <Bot className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                    <p className="text-slate-400 text-sm">
+                      Ask me anything about phishing prevention or security best practices.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {assistantMessages.map((message, index) => (
+                    <div
+                      key={`${message.role}-${index}`}
+                      className={cn(
+                        'flex gap-3',
+                        message.role === 'user' ? 'justify-end' : 'justify-start'
+                      )}
+                    >
+                      {message.role === 'assistant' && (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0 mt-1">
+                          <Bot className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                      <div
+                        className={cn(
+                          'max-w-[85%] px-4 py-2 rounded-lg text-sm leading-relaxed whitespace-pre-wrap break-words',
+                          message.role === 'user'
+                            ? 'bg-primary/20 border border-primary/40 text-slate-100'
+                            : 'bg-slate-800/80 border border-slate-700/50 text-slate-200'
+                        )}
+                      >
+                        {message.content}
+                      </div>
+                    </div>
+                  ))}
+                  {assistantLoading && (
+                    <div className="flex gap-3 justify-start">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0">
+                        <Bot className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="bg-slate-800/80 border border-slate-700/50 text-slate-200 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm">Thinking...</span>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Quick Questions - shown when no messages */}
+            {assistantMessages.length === 1 && !assistantLoading && (
+              <div className="px-6 py-3 border-t border-slate-700/50 bg-slate-900/30">
+                <p className="text-xs text-slate-400 mb-2 font-medium">Quick questions:</p>
+                <div className="flex flex-wrap gap-2">
+                  {quickQuestions.map((question) => (
+                    <button
+                      key={question}
+                      type="button"
+                      onClick={() => {
+                        void askAssistant(question);
+                      }}
+                      className="text-xs px-3 py-1 rounded-full border border-slate-600 text-slate-300 hover:border-primary/50 hover:text-white hover:bg-slate-800/40 transition-all"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Input Area */}
+            <div className="px-6 py-4 border-t border-slate-700/50 bg-slate-900/50">
+              <form onSubmit={handleAssistantSubmit} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={assistantInput}
+                  onChange={(event) => setAssistantInput(event.target.value)}
+                  placeholder="Ask about phishing prevention, sender verification, or cyber safety..."
+                  disabled={assistantLoading}
+                  className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={assistantLoading || !assistantInput.trim()}
+                  className="px-4 py-2.5 rounded-lg bg-primary text-dark font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors flex items-center justify-center"
+                >
+                  {assistantLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
