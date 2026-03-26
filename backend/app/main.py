@@ -16,7 +16,6 @@ else:
 from app.routes.analyze import router as analyze_router
 from app.routes.dashboard import router as dashboard_router
 from app.routes.simulate import router as simulate_router
-from app.routes.auth import router as auth_router
 from app.services.mongo_client import mongo_connection
 
 
@@ -30,6 +29,8 @@ app = FastAPI(
 allowed_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://safenetih.vercel.app",
@@ -48,7 +49,6 @@ app.add_middleware(
 app.include_router(analyze_router)
 app.include_router(simulate_router)
 app.include_router(dashboard_router)
-app.include_router(auth_router)
 
 
 @app.on_event("startup")

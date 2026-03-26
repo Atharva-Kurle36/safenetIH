@@ -36,15 +36,16 @@ def analyze_payload(email_text: str, url: str) -> dict[str, object]:
     ai_reasons = analyze_email_with_ai(email_text, url)
     if ai_reasons:
         reasons.extend(ai_reasons)
-        # Slightly boost score if AI confirms phishing indicators
-        if any(indicator.lower() in str(ai_reasons).lower() for indicator in ["urgent", "verify", "confirm", "click", "suspicious"]):
-            combined_score = min(100, combined_score + 5)
+        # Boost score if AI finds suspicious indicators
+        suspicious_indicators = ["urgent", "threat", "suspicious", "phishing", "fake", "scam", "verify", "confirm", "click", "password", "bank", "account"]
+        if any(indicator.lower() in str(ai_reasons).lower() for indicator in suspicious_indicators):
+            combined_score = min(100, combined_score + 10)
 
     if not email_text.strip() and not url.strip():
         reasons.append("No email text or URL was provided for analysis.")
 
     combined_score = max(0, min(100, combined_score))
-    result = "Phishing" if combined_score >= 50 else "Safe"
+    result = "Phishing" if combined_score >= 40 else "Safe"
 
     dashboard_telemetry.record_analysis(
         email_text=email_text,

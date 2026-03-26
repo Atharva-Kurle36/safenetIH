@@ -29,12 +29,10 @@ export default function PhishingDetector() {
     setError('');
 
     try {
-      const token = localStorage.getItem('access_token');
       const response = await fetch(`${API_BASE_URL}/analyze`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` })
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           email_text: emailText,

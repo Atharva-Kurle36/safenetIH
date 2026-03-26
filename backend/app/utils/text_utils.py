@@ -1,9 +1,9 @@
 import re
 
 
-URGENCY_WORDS = ["urgent", "verify", "immediately", "click now"]
-SENSITIVE_INFO_WORDS = ["password", "bank", "otp"]
-ADDITIONAL_THREAT_WORDS = ["suspend", "restricted", "confirm", "security alert"]
+URGENCY_WORDS = ["urgent", "verify", "immediately", "click", "now", "immediate", "action required", "act now"]
+SENSITIVE_INFO_WORDS = ["password", "bank", "otp", "credit card", "ssn", "social security", "login", "credentials"]
+ADDITIONAL_THREAT_WORDS = ["suspend", "restricted", "confirm", "security alert", "account blocked", "limited access", "unauthorized"]
 
 
 def _match_keywords(text: str, keywords: list[str]) -> list[str]:

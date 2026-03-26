@@ -67,7 +67,7 @@ def analyze_email_with_ai(email_text: str, url: str) -> Optional[list[str]]:
         return None
 
     prompt = f"""Analyze this email and URL for phishing indicators. 
-Be concise and list 1-2 key warning signs if it's suspicious, or confirm it appears safe.
+List specific warning signs if it's suspicious, or say "Appears safe" if legitimate.
 
 Email:
 {email_text}
@@ -75,7 +75,14 @@ Email:
 URL:
 {url}
 
-Respond with ONLY the warning signs or safety assessment, no preamble."""
+Look for:
+- Urgent or threatening language
+- Requests for personal/financial information  
+- Suspicious links or domains
+- Impersonation of trusted organizations
+- Poor grammar or unusual formatting
+
+Respond with 1-3 bullet points of findings:"""
 
     response = get_ai_response(prompt)
     if response:
@@ -148,7 +155,7 @@ def get_simulation_assistant_answer(
 ) -> Optional[str]:
     """
     Provide defensive cybersecurity guidance for phishing simulation questions.
-    Returns None when AI is unavailable so the API can report a service error.
+    Returns fallback responses when AI is unavailable.
     """
     indicators = indicators or []
 
@@ -181,4 +188,36 @@ Respond in this format:
     if response and response.strip():
         return response.strip()
 
-    return None
+    # Fallback responses when AI is unavailable
+    fallback_responses = {
+        "how to spot phishing": """1) Look for urgent language, suspicious links, and requests for personal information.
+2) Phishing emails create panic to make you act quickly without thinking.
+3) Check the sender's email address carefully
+4) Hover over links to see the real destination
+5) Never click links or provide information in unsolicited emails""",
+
+        "is this safe": """1) This appears to be a phishing attempt based on the indicators shown.
+2) Always verify requests through official channels, never through email links.
+3) Contact the organization directly using known contact information
+4) Don't provide personal or financial information via email
+5) Report suspicious emails to your IT security team""",
+
+        "what should i do": """1) Do not click any links or provide any information requested in the email.
+2) Phishing emails try to trick you into giving away sensitive information or installing malware.
+3) Verify the request through official channels
+4) Mark the email as spam/phishing if possible
+5) Report it to your organization's security team"""
+    }
+
+    # Find the best fallback match
+    question_lower = question.lower()
+    for key, response in fallback_responses.items():
+        if key in question_lower:
+            return response
+
+    # Default fallback
+    return """1) Be cautious with unsolicited emails asking for action or information.
+2) Phishing attacks rely on urgency and trust to bypass your defenses.
+3) Verify all requests through official channels
+4) Never share passwords, OTPs, or financial details via email
+5) When in doubt, contact the sender directly using known contact methods"""

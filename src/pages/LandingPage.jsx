@@ -102,6 +102,52 @@ export default function LandingPage() {
         </motion.div>
 
         {/* ═══════════════════════════════════════════════════════════
+            SECTION 2.5 — DATA BREACH CHECKER FEATURE
+        ═══════════════════════════════════════════════════════════ */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+          className="w-full max-w-6xl mx-auto mt-16 mb-10"
+        >
+          <div className="cyber-card group hover:-translate-y-2 transition-transform duration-300">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1 text-center md:text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-warning/30 bg-warning/5 text-warning text-sm font-medium backdrop-blur-md">
+                  <Shield className="w-4 h-4" />
+                  <span>Data Breach Protection</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                  Check If Your Email Has Been Breached
+                </h3>
+                <p className="text-slate-400 leading-relaxed mb-6 max-w-lg">
+                  Before analyzing suspicious emails, verify if your personal information has already been compromised in known data breaches. Stay one step ahead of attackers.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a
+                    href="https://haveibeenpwned.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cyber-button flex items-center justify-center gap-2 group"
+                  >
+                    Check Data Breach Status
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                  <span className="text-xs text-slate-500 self-center sm:self-start">
+                    Powered by Have I Been Pwned
+                  </span>
+                </div>
+              </div>
+              <div className="flex-shrink-0">
+                <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-warning/20 to-warning/5 border border-warning/20 flex items-center justify-center">
+                  <Search className="w-16 h-16 text-warning" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ═══════════════════════════════════════════════════════════
             SECTION 3 — TRUST STATISTICS BAR
         ═══════════════════════════════════════════════════════════ */}
         <div className="w-full max-w-6xl mx-auto py-16 border-y border-slate-800">

@@ -59,10 +59,3 @@ class MongoConnection:
 
 # Global connection instance
 mongo_connection = MongoConnection()
-
-
-async def get_users_collection():
-    """Get the users collection from MongoDB"""
-    if mongo_connection.db is None:
-        raise RuntimeError("MongoDB connection not available - call connect_db() first")
-    return mongo_connection.db["users"]

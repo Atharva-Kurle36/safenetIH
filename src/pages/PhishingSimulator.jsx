@@ -43,11 +43,8 @@ export default function PhishingSimulator() {
     setError('');
 
     try {
-      const token = localStorage.getItem('access_token');
       const response = await fetch(`${API_BASE_URL}/simulate`, {
-        headers: {
-          ...(token && { 'Authorization': `Bearer ${token}` })
-        }
+        headers: {}
       });
       if (!response.ok) {
         throw new Error(`Simulation API failed with status ${response.status}`);
@@ -114,12 +111,10 @@ export default function PhishingSimulator() {
     setAssistantLoading(true);
 
     try {
-      const token = localStorage.getItem('access_token');
       const response = await fetch(`${API_BASE_URL}/simulate/assistant`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` })
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           question: trimmedQuestion,
