@@ -1,14 +1,25 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   ShieldAlert, Crosshair, BarChart3, ChevronRight, Lock, 
-  Mail, Search, Zap, Users, Globe, CheckCircle2, ArrowRight,
+  Mail, Search, Zap, Users, CheckCircle2, ArrowRight,
   Shield, Brain, Eye, TrendingUp
 } from 'lucide-react';
 import { GlobePulse } from '../components/ui/cobe-globe-pulse';
 import { BGPattern } from '../components/ui/bg-pattern';
 
 export default function LandingPage() {
+  const navigate = useNavigate();
+
+  const navigateWithFallback = (path) => {
+    navigate(path);
+    window.setTimeout(() => {
+      if (window.location.pathname !== path) {
+        window.location.assign(path);
+      }
+    }, 120);
+  };
+
   return (
     <div className="relative flex flex-col pt-20">
       {/* Animated Cyber Grid Background */}
@@ -171,12 +182,11 @@ export default function LandingPage() {
             SECTION 3 — TRUST STATISTICS BAR
         ═══════════════════════════════════════════════════════════ */}
         <div className="w-full max-w-6xl mx-auto py-16 border-y border-slate-800">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             {[
-              { value: "1.4M+", label: "Threats Blocked", icon: Shield },
-              { value: "50K+", label: "Users Protected", icon: Users },
+              { value: "15", label: "Threats Blocked", icon: Shield },
+              { value: "5", label: "Users Protected", icon: Users },
               { value: "99.7%", label: "Detection Accuracy", icon: Eye },
-              { value: "30+", label: "Countries Served", icon: Globe }
             ].map((stat, i) => (
               <div key={i} className="flex flex-col items-center gap-2 group">
                 <stat.icon className="w-6 h-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -325,13 +335,21 @@ export default function LandingPage() {
                 No credit card required. No installation needed.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link to="/detector" className="cyber-button flex items-center gap-2 group">
+                <button
+                  type="button"
+                  onClick={() => navigateWithFallback('/detector')}
+                  className="cyber-button flex items-center gap-2 group"
+                >
                   Analyze Your First Email
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link to="/about" className="px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigateWithFallback('/about')}
+                  className="px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
+                >
                   Learn More
-                </Link>
+                </button>
               </div>
             </div>
           </div>

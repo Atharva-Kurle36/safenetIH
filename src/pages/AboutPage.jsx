@@ -1,16 +1,25 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Users, Cpu, Globe, ArrowRight, Sparkles, Lock, Eye } from 'lucide-react';
+import { ArrowRight, Sparkles, Lock, Eye } from 'lucide-react';
 
 export default function AboutPage() {
   const navigate = useNavigate();
 
+  const navigateWithFallback = (path) => {
+    navigate(path, { state: { source: 'about-cta' } });
+    window.setTimeout(() => {
+      if (window.location.pathname !== path) {
+        window.location.assign(path);
+      }
+    }, 120);
+  };
+
   const handleDetectorClick = () => {
-    navigate('/detector', { state: { source: 'about-cta' } });
+    navigateWithFallback('/detector');
   };
 
   const handleSimulatorClick = () => {
-    navigate('/simulator', { state: { source: 'about-cta' } });
+    navigateWithFallback('/simulator');
   };
 
   return (
@@ -48,32 +57,16 @@ export default function AboutPage() {
           className="cyber-card mb-12 overflow-hidden"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
-              <p className="text-slate-400 leading-relaxed mb-6">
-                Phishing remains the #1 attack vector in cybersecurity, responsible for over 90% of data breaches. 
-                SafeNet was created to close that gap by making real-time threat detection accessible and training people to think like security analysts.
-              </p>
-              <p className="text-slate-400 leading-relaxed">
-                We believe that security is not just a product — it's a mindset. Our platform combines machine learning models with gamified training 
-                to build a culture of cybersecurity awareness across your entire organization.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: "Threats Blocked", value: "1.4M+", icon: Shield },
-                { label: "Users Protected", value: "50K+", icon: Users },
-                { label: "AI Models Active", value: "12", icon: Cpu },
-                { label: "Countries Served", value: "30+", icon: Globe }
-              ].map((stat, idx) => (
-                <div key={idx} className="bg-dark/60 border border-slate-700/50 rounded-xl p-5 text-center hover:border-primary/30 transition-colors">
-                  <stat.icon className="w-6 h-6 text-primary mx-auto mb-3" />
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
-                </div>
-              ))}
-            </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
+            <p className="text-slate-400 leading-relaxed mb-6">
+              Phishing remains the #1 attack vector in cybersecurity, responsible for over 90% of data breaches. 
+              SafeNet was created to close that gap by making real-time threat detection accessible and training people to think like security analysts.
+            </p>
+            <p className="text-slate-400 leading-relaxed">
+              We believe that security is not just a product — it's a mindset. Our platform combines machine learning models with gamified training 
+              to build a culture of cybersecurity awareness across your entire organization.
+            </p>
           </div>
         </motion.div>
 
