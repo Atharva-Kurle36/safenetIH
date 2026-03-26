@@ -5,6 +5,8 @@ import {
   Mail, Search, Zap, Users, Globe, CheckCircle2, ArrowRight,
   Shield, Brain, Eye, TrendingUp
 } from 'lucide-react';
+import { GlobePulse } from '../components/ui/cobe-globe-pulse';
+import { BGPattern } from '../components/ui/bg-pattern';
 
 export default function LandingPage() {
   return (
@@ -20,31 +22,38 @@ export default function LandingPage() {
         {/* ═══════════════════════════════════════════════════════════
             SECTION 1 — HERO (full viewport)
         ═══════════════════════════════════════════════════════════ */}
-        <div className="min-h-screen flex flex-col justify-center items-center text-center">
+        <div className="relative isolate min-h-screen w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center py-10 overflow-hidden">
+          <BGPattern
+            variant="grid"
+            mask="fade-edges"
+            size={36}
+            fill="rgba(59, 130, 246, 0.12)"
+            className="pointer-events-none"
+          />
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="max-w-4xl mx-auto"
+            className="relative z-10 max-w-2xl"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full border border-primary/30 bg-primary/5 text-primary text-sm font-medium backdrop-blur-md">
               <Lock className="w-4 h-4" />
               <span>Next-Generation Enterprise Security</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 text-white leading-tight">
+            <h1 className="text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tight mb-8 text-white leading-tight text-center lg:text-left">
               Detect Phishing.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
                 Stay Secure.
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12">
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-12 text-center lg:text-left">
               AI-powered phishing detection and interactive safety training platform. 
               Empower your team to recognize and block sophisticated cyber threats before they compromise your data.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-6">
               <Link to="/detector" className="w-full sm:w-auto cyber-button flex items-center justify-center gap-2 group">
                 Analyze Email
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -52,6 +61,17 @@ export default function LandingPage() {
               <Link to="/simulator" className="w-full sm:w-auto px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300">
                 Start Training
               </Link>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
+            className="relative z-10 w-full flex justify-center lg:justify-end"
+          >
+            <div className="w-full max-w-[520px] rounded-3xl border border-transparent bg-transparent p-4 md:p-6">
+              <GlobePulse className="w-full" speed={0.0026} />
             </div>
           </motion.div>
         </div>

@@ -1,8 +1,18 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Shield, Users, Cpu, Globe, Github, Linkedin, Mail, ArrowRight, Sparkles, Lock, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Shield, Users, Cpu, Globe, ArrowRight, Sparkles, Lock, Eye } from 'lucide-react';
 
 export default function AboutPage() {
+  const navigate = useNavigate();
+
+  const handleDetectorClick = () => {
+    navigate('/detector', { state: { source: 'about-cta' } });
+  };
+
+  const handleSimulatorClick = () => {
+    navigate('/simulator', { state: { source: 'about-cta' } });
+  };
+
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
       {/* Background Glows */}
@@ -114,36 +124,6 @@ export default function AboutPage() {
           </div>
         </motion.div>
 
-        {/* Team Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold text-white text-center mb-10">Meet the Team</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { name: "Atharva Kurle", role: "Lead Developer", avatar: "AK" },
-              { name: "Team Member 2", role: "AI / ML Engineer", avatar: "TM" },
-              { name: "Team Member 3", role: "UI / UX Designer", avatar: "TM" }
-            ].map((member, idx) => (
-              <div key={idx} className="cyber-card text-center group hover:border-primary/30 transition-colors">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-white border-2 border-slate-700 group-hover:border-primary/40 transition-colors">
-                  {member.avatar}
-                </div>
-                <h3 className="text-lg font-bold text-white">{member.name}</h3>
-                <p className="text-sm text-slate-400 mt-1">{member.role}</p>
-                <div className="flex items-center justify-center gap-4 mt-4 text-slate-500">
-                  <Github className="w-4 h-4 hover:text-primary cursor-pointer transition-colors" />
-                  <Linkedin className="w-4 h-4 hover:text-primary cursor-pointer transition-colors" />
-                  <Mail className="w-4 h-4 hover:text-primary cursor-pointer transition-colors" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -158,13 +138,21 @@ export default function AboutPage() {
               Start scanning emails and training your team today. SafeNet makes enterprise-grade cybersecurity accessible to everyone.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/detector" className="cyber-button flex items-center gap-2 group">
+              <button
+                type="button"
+                onClick={handleDetectorClick}
+                className="cyber-button flex items-center gap-2 group"
+              >
                 Try the Detector
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link to="/simulator" className="px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300">
+              </button>
+              <button
+                type="button"
+                onClick={handleSimulatorClick}
+                className="px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
+              >
                 Launch Simulator
-              </Link>
+              </button>
             </div>
           </div>
         </motion.div>

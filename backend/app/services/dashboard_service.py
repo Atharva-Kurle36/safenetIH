@@ -121,7 +121,7 @@ class DashboardTelemetryStore:
         return rows
 
     def _recent_high_risk_threats(self, limit: int = 8) -> list[dict[str, int | str]]:
-        risky = [e for e in self.analysis_events if e.result.lower() == "phishing" and e.risk_score >= 70]
+        risky = [e for e in self.analysis_events if e.result.lower() == "phishing" and e.risk_score >= 50]
         risky.sort(key=lambda e: e.timestamp, reverse=True)
 
         rows: list[dict[str, int | str]] = []
@@ -293,7 +293,7 @@ class MongoDashboardTelemetryStore:
 
     def _recent_high_risk_threats(self, limit: int = 8) -> list[dict[str, int | str]]:
         cursor = self.analysis_collection.find(
-            {"result": "Phishing", "risk_score": {"$gte": 70}}
+            {"result": "Phishing", "risk_score": {"$gte": 50}}
         ).sort("timestamp", -1).limit(limit)
 
         rows: list[dict[str, int | str]] = []
