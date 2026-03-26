@@ -1,21 +1,33 @@
 from __future__ import annotations
 
 import os
+from typing import Any
 
-from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import PyMongoError
+
+try:
+    from motor.motor_asyncio import AsyncIOMotorClient
+except Exception:
+    AsyncIOMotorClient = None
 
 
 class MongoConnection:
     def __init__(self) -> None:
         self.uri = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
         self.db_name = os.getenv("MONGO_DB_NAME", "safenet")
-        self.client: AsyncIOMotorClient | None = None
+        self.client: Any | None = None
         self.db: object | None = None
         self.enabled = False
 
     async def connect(self) -> None:
         """Connect to MongoDB"""
+        if AsyncIOMotorClient is None:
+            print("MongoDB async driver (motor) is not installed; running without MongoDB")
+            self.client = None
+            self.db = None
+            self.enabled = False
+            return
+
         try:
             self.client = AsyncIOMotorClient(self.uri, serverSelectionTimeoutMS=2000)
             await self.client.admin.command("ping")

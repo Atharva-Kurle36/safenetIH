@@ -196,11 +196,17 @@ class DashboardTelemetryStore:
 
 class MongoDashboardTelemetryStore:
     def __init__(self) -> None:
-        if mongo_connection.db is None:
-            raise RuntimeError("Mongo database is not available")
+        try:
+            from pymongo import MongoClient
+        except Exception as exc:
+            raise RuntimeError(f"pymongo is unavailable: {exc}") from exc
 
-        self.analysis_collection = mongo_connection.db["analysis_events"]
-        self.simulation_collection = mongo_connection.db["simulation_events"]
+        self.client = MongoClient(mongo_connection.uri, serverSelectionTimeoutMS=2000)
+        self.client.admin.command("ping")
+        self.db = self.client[mongo_connection.db_name]
+
+        self.analysis_collection = self.db["analysis_events"]
+        self.simulation_collection = self.db["simulation_events"]
 
         self.analysis_collection.create_index("timestamp")
         self.analysis_collection.create_index("result")
@@ -421,6 +427,36 @@ class MongoDashboardTelemetryStore:
         }
 
 
-dashboard_telemetry = (
-    MongoDashboardTelemetryStore() if mongo_connection.enabled else DashboardTelemetryStore()
-)
+class DashboardTelemetryFacade:
+    """Use Mongo telemetry whenever it is available after startup; otherwise fallback to memory."""
+
+    def __init__(self) -> None:
+        self._memory_store = DashboardTelemetryStore()
+        self._mongo_store: MongoDashboardTelemetryStore | None = None
+
+    def _current_store(self) -> DashboardTelemetryStore | MongoDashboardTelemetryStore:
+        if mongo_connection.enabled:
+            if self._mongo_store is None:
+                try:
+                    self._mongo_store = MongoDashboardTelemetryStore()
+                except Exception as exc:
+                    print(f"Mongo telemetry init failed, falling back to memory: {exc}")
+                    return self._memory_store
+            return self._mongo_store
+
+        return self._memory_store
+
+    def record_analysis(self, email_text: str, url: str, result: str, risk_score: int) -> None:
+        store = self._current_store()
+        store.record_analysis(email_text=email_text, url=url, result=result, risk_score=risk_score)
+
+    def record_simulation_generated(self) -> None:
+        store = self._current_store()
+        store.record_simulation_generated()
+
+    def metrics_payload(self) -> dict[str, object]:
+        store = self._current_store()
+        return store.metrics_payload()
+
+
+dashboard_telemetry = DashboardTelemetryFacade()
