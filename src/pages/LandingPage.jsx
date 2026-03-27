@@ -5,7 +5,7 @@ import {
   Mail, Search, Zap, Users, CheckCircle2, ArrowRight,
   Shield, Brain, Eye, TrendingUp
 } from 'lucide-react';
-import { GlobePulse } from '../components/ui/cobe-globe-pulse';
+import { InteractiveGlobe } from '../components/ui/interactive-globe';
 import { BGPattern } from '../components/ui/bg-pattern';
 
 export default function LandingPage() {
@@ -33,7 +33,7 @@ export default function LandingPage() {
         {/* ═══════════════════════════════════════════════════════════
             SECTION 1 — HERO (full viewport)
         ═══════════════════════════════════════════════════════════ */}
-        <div className="relative isolate min-h-screen w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center py-10 overflow-hidden">
+        <div className="relative isolate w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center py-10 md:py-20 overflow-hidden">
           <BGPattern
             variant="grid"
             mask="fade-edges"
@@ -82,7 +82,7 @@ export default function LandingPage() {
             className="relative z-10 w-full flex justify-center lg:justify-end"
           >
             <div className="w-full max-w-[520px] rounded-3xl border border-transparent bg-transparent p-4 md:p-6">
-              <GlobePulse className="w-full" speed={0.0026} />
+              <InteractiveGlobe className="w-full" size={460} autoRotateSpeed={0.0026} />
             </div>
           </motion.div>
         </div>
@@ -101,33 +101,63 @@ export default function LandingPage() {
               title: "AI Analysis",
               desc: "Deep-learning models to detect malicious patterns, urgent language, and suspicious sender data.",
               icon: ShieldAlert,
-              color: "text-primary",
-              bg: "bg-primary/10",
-              border: "border-primary/20"
+              btnBase: "from-indigo-900/40 via-neutral-900/60 to-black/80 border-indigo-500/30 hover:border-indigo-400/60 hover:shadow-indigo-500/30",
+              sweep: "from-transparent via-indigo-400/30 to-transparent",
+              hoverBg: "from-indigo-500/10 via-indigo-400/20 to-indigo-500/10",
+              iconBg: "from-indigo-500/30 to-indigo-600/10 group-hover:from-indigo-400/40 group-hover:to-indigo-500/20",
+              iconText: "text-indigo-400 group-hover:text-indigo-300",
+              titleColor: "text-indigo-400 group-hover:text-indigo-300",
             },
             {
               title: "Live Simulations",
               desc: "Train employees with realistic, interactive phishing scenarios mimicking real-world attacks.",
               icon: Crosshair,
-              color: "text-danger",
-              bg: "bg-danger/10",
-              border: "border-danger/20"
+              btnBase: "from-amber-900/40 via-neutral-900/60 to-black/80 border-amber-500/30 hover:border-amber-400/60 hover:shadow-amber-500/30",
+              sweep: "from-transparent via-amber-400/30 to-transparent",
+              hoverBg: "from-amber-500/10 via-amber-400/20 to-amber-500/10",
+              iconBg: "from-amber-500/30 to-amber-600/10 group-hover:from-amber-400/40 group-hover:to-amber-500/20",
+              iconText: "text-amber-400 group-hover:text-amber-300",
+              titleColor: "text-amber-400 group-hover:text-amber-300",
             },
             {
               title: "Analytics Setup",
               desc: "Track company-wide security posture and individual risk scores over time.",
               icon: BarChart3,
-              color: "text-secondary",
-              bg: "bg-secondary/10",
-              border: "border-secondary/20"
+              btnBase: "from-purple-900/40 via-neutral-900/60 to-black/80 border-purple-500/30 hover:border-purple-400/60 hover:shadow-purple-500/30",
+              sweep: "from-transparent via-purple-400/30 to-transparent",
+              hoverBg: "from-purple-500/10 via-purple-400/20 to-purple-500/10",
+              iconBg: "from-purple-500/30 to-purple-600/10 group-hover:from-purple-400/40 group-hover:to-purple-500/20",
+              iconText: "text-purple-400 group-hover:text-purple-300",
+              titleColor: "text-purple-400 group-hover:text-purple-300",
             }
           ].map((feature, i) => (
-            <div key={i} className="cyber-card group hover:-translate-y-2 transition-transform duration-300">
-              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${feature.bg} ${feature.border} border`}>
-                <feature.icon className={`w-7 h-7 ${feature.color}`} />
+            <div key={i} className={`group relative p-6 md:p-8 rounded-2xl backdrop-blur-xl border-2 bg-gradient-to-br shadow-2xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-500 ease-out overflow-hidden w-full flex flex-col items-start ${feature.btnBase}`}>
+              {/* Sweep effect */}
+              <div className={`absolute inset-0 bg-gradient-to-r ${feature.sweep} -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out z-0`}></div>
+              
+              {/* Hover background */}
+              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${feature.hoverBg} opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0`}></div>
+              
+              <div className="relative z-10 flex flex-col items-start h-full">
+                <div className={`p-4 rounded-xl bg-gradient-to-br backdrop-blur-sm transition-all duration-300 mb-6 group-hover:scale-110 drop-shadow-lg ${feature.iconBg}`}>
+                  <feature.icon className={`w-8 h-8 transition-all duration-300 ${feature.iconText}`} />
+                </div>
+                
+                <h3 className={`text-xl font-bold mb-3 transition-colors duration-300 drop-shadow-sm ${feature.titleColor}`}>
+                  {feature.title}
+                </h3>
+                
+                <p className="text-slate-300/80 group-hover:text-slate-200 transition-colors duration-300 leading-relaxed z-10">
+                  {feature.desc}
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-              <p className="text-slate-400 leading-relaxed">{feature.desc}</p>
+              
+              {/* Arrow chevron */}
+              <div className="relative z-10 mt-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 w-full flex justify-end">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" className={`w-6 h-6 ${feature.iconText}`}>
+                  <path d="M9 5l7 7-7 7" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+                </svg>
+              </div>
             </div>
           ))}
         </motion.div>
@@ -334,22 +364,20 @@ export default function LandingPage() {
                 Join thousands of companies using SafeNet to defend against phishing attacks. 
                 No credit card required. No installation needed.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => navigateWithFallback('/detector')}
-                  className="cyber-button flex items-center gap-2 group"
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-50">
+                <Link
+                  to="/detector"
+                  className="cyber-button flex items-center gap-2 group cursor-pointer"
                 >
                   Analyze Your First Email
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateWithFallback('/about')}
-                  className="px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
+                </Link>
+                <Link
+                  to="/about"
+                  className="px-8 py-3 rounded-full text-white font-semibold border border-slate-700 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300 cursor-pointer"
                 >
                   Learn More
-                </button>
+                </Link>
               </div>
             </div>
           </div>
